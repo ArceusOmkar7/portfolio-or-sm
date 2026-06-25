@@ -1,10 +1,11 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 
 const modes = ["light", "dark", "system"] as const
 
-const icons = {
+const icons: Record<string, React.ReactNode> = {
   light: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4">
       <circle cx="12" cy="12" r="4" />
@@ -25,7 +26,13 @@ const icons = {
 }
 
 export function ThemeToggle() {
+  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+
+  useEffect(() => setMounted(true), [])
+
+  if (!mounted) return null
+
   const current = theme === "system" ? "system" : theme === "dark" ? "dark" : "light"
 
   return (
