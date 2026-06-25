@@ -8,7 +8,7 @@ export default function Page() {
         Outer container to mimic the rounded border from the sketch.
         The max-width ensures it looks like a card on larger screens.
       */}
-      <div className="w-full max-w-6xl rounded-[2.5rem] border border-border/60 bg-card/30 p-6 shadow-xl backdrop-blur-sm sm:p-10">
+      <div className="w-full max-w-6xl rounded-[2.5rem] border-2 border-black bg-card p-6 shadow-brutal sm:p-10">
         
         <BentoGridContainer
           gap={20}
@@ -35,15 +35,15 @@ export default function Page() {
             Spans 1 column and 2 rows (tall card) to match the verticality in the sketch.
           */}
           <BentoCard
-            surface="glass"
+            surface="accent"
             interactive
             className="flex items-center justify-center text-center sm:col-span-1 sm:col-start-4 sm:row-span-2"
           >
             <div className="flex flex-col items-center gap-2">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
-                <div className="w-6 h-6 rounded-full bg-primary/20" />
+              <div className="w-12 h-12 rounded-full bg-black/10 flex items-center justify-center animate-pulse">
+                <div className="w-6 h-6 rounded-full bg-black/20" />
               </div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Some GIF Here</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-primary-foreground">GIF</p>
             </div>
           </BentoCard>
 
@@ -93,10 +93,10 @@ export default function Page() {
           */}
           <BentoCard
             interactive
-            surface="glass"
+            surface="accent"
             className="flex items-center justify-center sm:col-span-1 sm:col-start-7 sm:row-start-2"
           >
-            <p className="text-sm font-bold rotate-0 sm:-rotate-90 uppercase tracking-tighter text-foreground">Socials</p>
+            <p className="text-sm font-bold rotate-0 sm:-rotate-90 uppercase tracking-tighter text-primary-foreground">Socials</p>
           </BentoCard>
         </BentoGridContainer>
       </div>

@@ -1,10 +1,10 @@
-import { Geist, Geist_Mono, Outfit, Raleway } from "next/font/google"
+import { Geist_Mono, Outfit, Space_Grotesk } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 
-const ralewayHeading = Raleway({subsets:['latin'],variable:'--font-heading'});
+const spaceGrotesk = Space_Grotesk({subsets:['latin'],variable:'--font-heading',weight:['400','500','600','700']});
 
 const outfit = Outfit({subsets:['latin'],variable:'--font-sans'})
 
@@ -22,7 +22,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", outfit.variable, ralewayHeading.variable)}
+      className={cn("antialiased", fontMono.variable, "font-sans", outfit.variable, spaceGrotesk.variable)}
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>

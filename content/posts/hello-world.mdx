@@ -1,0 +1,28 @@
+---
+title: "Hello, World!"
+date: "2026-06-23"
+excerpt: "First post on the new blog. Setting up MDX with next-mdx-remote was straightforward."
+tags: ["meta", "nextjs"]
+---
+
+This is the first post on the new blog. The setup uses `next-mdx-remote` with gray-matter for frontmatter parsing.
+
+## Why next-mdx-remote?
+
+It's more flexible than `@next/mdx` — no config needed in `next.config.ts`, and it works well with the App Router.
+
+### Code block
+
+```tsx
+import { MDXRemote } from "next-mdx-remote/rsc"
+
+function Post({ content }: { content: string }) {
+  return <MDXRemote source={content} />
+}
+```
+
+### List example
+
+- Works with App Router
+- Supports gray-matter frontmatter
+- No build-time config required

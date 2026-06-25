@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
 type SpanValue = number | "auto"
 
 const bentoCardVariants = cva(
-	"relative overflow-hidden rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm transition-all duration-200",
+	"relative overflow-hidden rounded-2xl border-2 border-black bg-card text-card-foreground shadow-brutal transition-all duration-200",
 	{
 		variants: {
 			padding: {
@@ -21,12 +21,13 @@ const bentoCardVariants = cva(
 				lg: "p-8",
 			},
 			interactive: {
-				true: "hover:shadow-md hover:border-border/100 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 active:scale-[0.98]",
+				true: "hover:shadow-brutal-hover hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:translate-y-[3px] active:shadow-[2px_2px_0px_#000]",
 				false: "",
 			},
 			surface: {
 				solid: "bg-card",
-				glass: "bg-card/70 backdrop-blur-md supports-[backdrop-filter]:bg-card/60",
+				glass: "bg-card/90 backdrop-blur-sm",
+				accent: "bg-primary text-primary-foreground",
 			},
 		},
 		defaultVariants: {
