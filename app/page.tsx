@@ -6,7 +6,14 @@ import { getAllPosts } from "@/lib/blog"
 function formatDate(dateStr: string) {
   const d = new Date(dateStr)
   const day = d.getDate()
-  const suffix = ["th", "st", "nd", "rd"][day % 30 > 3 ? 0 : day % 10] || "th"
+  const mod100 = day % 100
+  const mod10 = day % 10
+  let suffix = "th"
+  if (mod100 !== 11 && mod100 !== 12 && mod100 !== 13) {
+    if (mod10 === 1) suffix = "st"
+    else if (mod10 === 2) suffix = "nd"
+    else if (mod10 === 3) suffix = "rd"
+  }
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
   return `${day}${suffix} ${months[d.getMonth()]} ${d.getFullYear()}`
 }
@@ -141,6 +148,7 @@ export default function Page() {
           </BentoCard>
 
           <BentoCard
+            interactive
             surface="accent"
             className="flex flex-col sm:col-span-1 sm:col-start-7 sm:row-start-2 p-3 gap-2"
           >
