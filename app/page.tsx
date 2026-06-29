@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { BentoGridContainer } from "./components/BentoGridContainer"
 import { BentoCard } from "./components/BentoCard"
@@ -105,13 +106,15 @@ export default function Page() {
           <BentoCard
             surface="accent"
             interactive
-            className="flex items-center justify-center p-0 text-center sm:col-span-1 sm:col-start-4 sm:row-span-2"
+            className="relative flex items-center justify-center p-0 text-center sm:col-span-1 sm:col-start-4 sm:row-span-2"
           >
-            <img
+            <Image
               src="/images/kitty.gif"
               alt="Kitty"
-              className="size-full rounded-2xl object-cover"
+              fill
+              className="rounded-2xl object-cover"
               style={{ objectPosition: "-70px center" }}
+              unoptimized
             />
           </BentoCard>
 
