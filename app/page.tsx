@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { BentoGridContainer } from "./components/BentoGridContainer"
 import { BentoCard } from "./components/BentoCard"
+import { OpenSourceCard } from "./components/OpenSourceCard"
 import { getAllPosts } from "@/lib/blog"
 
 function formatDate(dateStr: string) {
@@ -158,7 +159,7 @@ export default function Page() {
                     (tag) => (
                       <span
                         key={tag}
-                        className="border border-black bg-card px-2 py-0.5 text-[11px] font-bold text-foreground rounded-2xl shadow-[2px_2px_0px_#000]"
+                        className="rounded-2xl border border-black bg-card px-2 py-0.5 text-[11px] font-bold text-foreground shadow-[2px_2px_0px_#000]"
                       >
                         {tag}
                       </span>
@@ -183,11 +184,9 @@ export default function Page() {
           */}
           <BentoCard
             interactive
-            className="flex items-center justify-center sm:col-span-2 sm:col-start-5 sm:row-start-2"
+            className="flex flex-col gap-2 sm:col-span-2 sm:col-start-5 sm:row-start-2"
           >
-            <p className="text-center text-lg font-bold text-foreground">
-              Open source contribution
-            </p>
+            <OpenSourceCard />
           </BentoCard>
 
           <BentoCard

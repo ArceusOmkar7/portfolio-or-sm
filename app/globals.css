@@ -162,3 +162,30 @@
     @apply border-2 border-black rounded-2xl shadow-brutal my-6;
   }
 }
+
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--card);
+  border-left: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border: 2px solid #000;
+  border-radius: 8px;
+  min-height: 48px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--primary), #000 15%);
+}
+
+@supports (scrollbar-width: auto) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--card);
+  }
+}

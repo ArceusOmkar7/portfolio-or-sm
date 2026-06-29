@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 
 const modes = ["light", "dark", "system"] as const
@@ -26,10 +26,12 @@ const icons: Record<string, React.ReactNode> = {
 }
 
 export function ThemeToggle() {
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
   const { theme, setTheme } = useTheme()
-
-  useEffect(() => setMounted(true), [])
 
   if (!mounted) return null
 
