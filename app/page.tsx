@@ -14,7 +14,20 @@ function formatDate(dateStr: string) {
     else if (mod10 === 2) suffix = "nd"
     else if (mod10 === 3) suffix = "rd"
   }
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
   return `${day}${suffix} ${months[d.getMonth()]} ${d.getFullYear()}`
 }
 
@@ -124,14 +137,44 @@ export default function Page() {
           */}
           <BentoCard
             interactive
-            className="group flex items-center justify-center sm:col-span-3 sm:row-start-2"
+            className="flex flex-col justify-between sm:col-span-3 sm:row-start-2"
           >
-            <div className="text-center">
-              <p className="text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
-                One top project
-              </p>
-              <div className="mx-auto mt-2 h-1 w-0 rounded-full bg-primary/40 transition-all duration-300 group-hover:w-full" />
+            <div>
+              <Link
+                href="https://github.com/ArceusOmkar7/some-project"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+              >
+                <h3 className="font-heading text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
+                  GNIEM
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  All scattered events at one place, near real-time and with AI
+                  insights.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {["Python", "DuckDB", "BigQuery", "Fast API", "Big Data"].map(
+                    (tag) => (
+                      <span
+                        key={tag}
+                        className="border border-black bg-card px-2 py-0.5 text-[11px] font-bold text-foreground rounded-2xl shadow-[2px_2px_0px_#000]"
+                      >
+                        {tag}
+                      </span>
+                    )
+                  )}
+                </div>
+              </Link>
             </div>
+            <Link
+              href="https://github.com/ArceusOmkar7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 self-start font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              View all projects →
+            </Link>
           </BentoCard>
 
           {/*
@@ -150,9 +193,12 @@ export default function Page() {
           <BentoCard
             interactive
             surface="accent"
-            className="flex flex-col sm:col-span-1 sm:col-start-7 sm:row-start-2 p-3 gap-2"
+            className="flex flex-col gap-2 p-3 sm:col-span-1 sm:col-start-7 sm:row-start-2"
           >
-            <Link href="/blog" className="text-xs font-bold tracking-tighter text-primary-foreground/80 hover:underline">
+            <Link
+              href="/blog"
+              className="font-heading text-sm font-bold tracking-tight text-primary-foreground/90 hover:underline"
+            >
               Blog
             </Link>
             <div className="flex flex-col gap-1.5">
@@ -160,19 +206,19 @@ export default function Page() {
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="group block border border-primary-foreground/20 rounded-lg bg-primary-foreground/5 px-2.5 py-1.5 hover:bg-primary-foreground/10 transition-colors"
+                  className="group block rounded-lg border border-primary-foreground/20 bg-primary-foreground/5 px-2.5 py-1.5 transition-colors hover:bg-primary-foreground/10"
                 >
                   <div className="flex items-center justify-between gap-1">
-                    <span className="text-[11px] font-semibold leading-tight text-primary-foreground truncate">
+                    <span className="truncate text-[11px] leading-tight font-semibold text-primary-foreground">
                       {post.title}
                     </span>
                     {i === 0 && (
-                      <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-primary-foreground/50">
+                      <span className="shrink-0 text-[9px] font-bold tracking-wider text-primary-foreground/50 uppercase">
                         Latest
                       </span>
                     )}
                   </div>
-                  <time className="block text-[10px] text-primary-foreground/40 mt-0.5">
+                  <time className="mt-0.5 block text-[10px] text-primary-foreground/40">
                     {formatDate(post.date)}
                   </time>
                 </Link>
@@ -180,7 +226,7 @@ export default function Page() {
             </div>
             <Link
               href="/blog"
-              className="text-[10px] font-mono text-primary-foreground/40 hover:text-primary-foreground/70 transition-colors"
+              className="font-mono text-[10px] text-primary-foreground/40 transition-colors hover:text-primary-foreground/70"
             >
               View all →
             </Link>
