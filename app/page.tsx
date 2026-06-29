@@ -36,7 +36,7 @@ function formatDate(dateStr: string) {
 export default function Page() {
   const posts = getAllPosts()
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8 md:p-12">
+    <main className="relative z-10 flex min-h-screen items-center justify-center p-4 sm:p-8 md:p-12">
       {/*
         Outer container to mimic the rounded border from the sketch.
         The max-width ensures it looks like a card on larger screens.
