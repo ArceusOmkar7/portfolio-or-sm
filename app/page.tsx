@@ -115,9 +115,7 @@ export default function Page() {
           >
             <div>
               <Link
-                href="https://github.com/ArceusOmkar7/some-project"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/projects/gniem"
                 className="group"
               >
                 <h3 className="font-heading text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">

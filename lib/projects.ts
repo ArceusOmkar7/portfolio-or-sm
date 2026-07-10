@@ -2,6 +2,7 @@ export interface Project {
   slug: string
   name: string
   description: string
+  images: string[]
   tags: string[]
   type: "ML" | "Backend" | "OSS" | "Full Stack"
   url?: string
@@ -17,87 +18,97 @@ const projects: Project[] = [
     slug: "gniem",
     name: "GNIEM",
     description:
-      "All scattered events at one place, near real-time and with AI insights.",
-    tags: ["Python", "DuckDB", "BigQuery", "FastAPI", "Big Data"],
+      "Global News Intelligence & Event Monitoring — a geopolitical dashboard built on GDELT, without the multi-terabyte cloud bill.",
+    images: [
+      "/images/projects/gniem/dashboard-1.png",
+      "/images/projects/gniem/dashboard-2.png",
+      "/images/projects/gniem/events-map.png",
+      "/images/projects/gniem/gniem-min-arch.png",
+      "/images/projects/gniem/sidebar-1.png",
+      "/images/projects/gniem/sidebar-2.png",
+    ],
+    tags: ["Python", "TypeScript", "DuckDB", "BigQuery", "FastAPI", "React"],
     type: "Backend",
-    github: "https://github.com/ArceusOmkar7/some-project",
+    github: "https://github.com/ArceusOmkar7/gniem",
     problem:
-      "University events — hackathons, guest lectures, fests — were scattered across WhatsApp groups, Instagram stories, and printed posters. Students constantly missed things they'd have wanted to attend. No central discovery existed, and the window to act was often hours, not days.",
+      "GDELT 2.1 is a global events database that updates every 15 minutes and runs into multi-terabyte scale. Querying it for near-real-time geopolitical monitoring the naive way — hitting BigQuery on every request — gets expensive fast, and full-history warehousing isn't something a student project can just spin up.",
     what:
-      "Built a near real-time event aggregation platform that ingests from multiple sources (Google Calendar, social media scrapers, manual submissions), deduplicates via semantic similarity, and surfaces events through a FastAPI-backed feed. An LLM layer extracts structured fields (date, venue, category) from unstructured text. The frontend is a lightweight SPA with instant search and filter by category.",
+      "A hybrid OLAP dashboard that splits GDELT data into two tiers: a hot tier (last 90 days) ingested via daily BigQuery batch pulls plus 15-minute streaming fetches, stored as Parquet and queried in-process with DuckDB for low latency; and a cold tier (historical, >90 days) that stays in BigQuery behind a routing engine. On top of that sits an ML layer — Prophet for 30-day forecasts of conflict-event volume, IsolationForest for anomaly/'black swan' detection, TF-IDF + K-Means to cluster raw CAMEO event codes into readable themes, and a nightly Llama 3 (via Groq) pass that generates written regional briefings. The frontend is a React 19 + TypeScript + Vite bento-grid dashboard with Mapbox GL JS heatmaps, Wikipedia entity enrichment, and on-demand article scraping via Jina AI Reader.",
     techDecisions:
-      "DuckDB as the hot tier over Postgres — event data is write-once, read-many with analytical queries (count by category, trends over time). DuckDB's columnar scan on the 48M-row test corpus was ~14× faster than Postgres for the aggregation queries the AI layer needs. BigQuery is the cold tier for historical analytics. Used sentence-transformers for dedup instead of exact matching because event titles like 'ML Workshop' and 'Machine Learning Workshop' needed to collapse into one.",
+      "DuckDB in-process over a hosted OLAP DB for the hot tier — Parquet + DuckDB gives fast analytical scans without running a database server. BigQuery is only touched for cold-tier historical queries, and even then every call goes through column pruning, SQLDATE partition filters, and a dry-run byte-estimate check before executing, capped at ~2GB scanned per query — necessary guardrails to keep this runnable on a personal GCP budget. TF-IDF + K-Means over heavier embedding-based clustering for the theme grouping, since it runs on a nightly schedule and needs to stay cheap, not real-time. Supercronic instead of full cron/Kubernetes for scheduling, since the whole stack ships as Docker Compose.",
     results:
-      "~300 events indexed from 6 sources in the pilot. Dedup accuracy hit 94% after tuning the similarity threshold. The AI extraction pipeline reduced manual entry time by an estimated 80% for organizers submitting unstructured posts.",
+      "Ships as a self-contained Docker Compose stack (FastAPI backend, Nginx-served frontend, cron scheduler container). Hot tier refreshes every 15 minutes; nightly jobs regenerate anomaly flags and AI-written regional briefings automatically without manual intervention.",
   },
   {
     slug: "mlops-telco-churn",
     name: "MLOps Pipeline (Telco Churn)",
     description:
-      "End-to-end ML pipeline for predicting customer churn, tracked and served via MLflow.",
-    tags: ["Python", "MLflow", "Docker", "FastAPI", "scikit-learn"],
+      "Production-grade, end-to-end MLOps pipeline for customer churn — every stage of the ML lifecycle wired together, not just a notebook.",
+    images: [
+      "/images/projects/telco-churn/prefect_pipeline_dashboard.png",
+      "/images/projects/telco-churn/mlflow_runs.png",
+      "/images/projects/telco-churn/mlflow_run_overview.png",
+      "/images/projects/telco-churn/mlflow_run_artifact_cm.png",
+    ],
+    tags: ["Python", "Prefect", "MLflow", "Evidently", "FastAPI", "scikit-learn"],
     type: "ML",
-    github: "https://github.com/ArceusOmkar7/mlops-telco-churn",
+    github: "https://github.com/ArceusOmkar7/telco-churn-pipeline",
     problem:
-      "A telco dataset with ~100K customers, ~20 features — standard classification stuff. But the real problem wasn't the model; it was that every retrain required manual notebook re-runs, there was no experiment tracking, and the 'production' model was a pickle file passed around on Slack.",
+      "Most churn-prediction demos stop at a Jupyter notebook with a decent AUC. The real gap is everything around the model: no experiment tracking, no automated quality gate before deploying, no way to know when the model has gone stale, and no repeatable retrain path once new data shows up.",
     what:
-      "Containerised the entire pipeline — feature engineering, training, evaluation, and serving — as Docker stages. MLflow tracks every run with params, metrics, and the model artifact. A FastAPI serving container loads the registered model from the MLflow Model Registry and exposes a `/predict` endpoint with input validation via Pydantic. GitHub Actions triggers retrain weekly on new data.",
+      "A full MLOps pipeline — ingest (Kaggle download via kagglehub with schema/null/class-balance checks) → preprocess (encoding, scaling, stratified split, reference batch saved for drift baselines) → train (RandomForestClassifier with MLflow autologging) → evaluate (accuracy/F1/AUC computed independently as a quality gate, confusion matrix logged) → register (promoted to the MLflow Model Registry under a 'production' alias only if the gate passes) → serve (FastAPI /predict + /health, loading model and preprocessor together from the registry) → monitor (Evidently drift detection comparing a fixed reference batch against simulated production traffic) → auto-retrain if drift is flagged. Every step is wrapped as a Prefect task, so the whole thing runs as one orchestrated flow with retries and a visual dashboard.",
     techDecisions:
-      "Chose MLflow over Kubeflow because the team is small and the scale doesn't warrant Kubernetes overhead. MLflow's Model Registry gave us stage promotion (Staging → Production) without infra complexity. Used `shap` for explainability baked into the API response — the business team needed to see why a customer was flagged, not just the churn score. Opted for sklearn's HistGradientBoostingClassifier over XGBoost; within 5% of XGBoost AUC but trains 2× faster on this dataset size and handles missing values natively.",
+      "MLflow Model Registry using aliases (e.g. @production) instead of the deprecated stage-based API — cleaner promotion logic with no stage-lifecycle bookkeeping. Preprocessor is logged as an artifact inside the same MLflow run as the model, and the serving API pulls both from that same run_id — guarantees the API never loads a model paired with the wrong preprocessor. Evidently v0.7 requires wrapping data in Dataset.from_pandas() + an explicit DataDefinition instead of the old ColumnMapping, otherwise it silently tries to run NLP-style drift tests on numeric columns. A hard quality gate (accuracy ≥ 0.70, weighted F1 ≥ 0.65, AUC ≥ 0.75) blocks registration — retraining can never silently promote a worse model.",
     results:
-      "Pipeline runs in ~8 minutes end-to-end. AUC of 0.87 on holdout. The `/predict` endpoint handles ~200 req/s on a single t3.medium. The retrain workflow has run 14 times without manual intervention.",
+      "Runs on the Kaggle Telco Customer Churn dataset (7,043 rows, 21 features, ~73/27 class split) handled via stratified splits and weighted F1. Full pipeline orchestrated by Prefect with automatic retries on flaky steps; CI runs 3 fully-mocked tests on every push with zero external dependencies (no live MLflow server, Kaggle credentials, or data files needed).",
   },
   {
-    slug: "yolov11-algae",
-    name: "YOLOv11 Algae Segmentation",
+    slug: "vizzy",
+    name: "Vizzy",
     description:
-      "Instance segmentation model for microscopic algae detection in water samples.",
-    tags: ["Python", "YOLOv11", "PyTorch", "OpenCV", "Roboflow"],
-    type: "ML",
-    github: "https://github.com/ArceusOmkar7/yolov11-algae",
-    problem:
-      "Environmental monitoring labs manually count algae colonies under microscopes — tedious, error-prone, and slow. A single sample can take 20+ minutes. Researchers needed an automated way to segment and classify algae species from microscope imagery.",
-    what:
-      "Curated a dataset of ~4,200 annotated microscope images across 8 algae species using Roboflow for labelling and augmentation. Trained a YOLOv11-seg model with transfer learning from the COCO pretrained weights. The pipeline exports segmentation masks and per-species counts as CSV, which feeds directly into the lab's existing reporting dashboard.",
-    techDecisions:
-      "YOLOv11 over Mask R-CNN — inference speed was critical (lab processes 200+ samples/day). YOLOv11-seg hits ~45 FPS on a T4 vs ~8 FPS for Mask R-CNN with comparable mAP. Used Roboflow's augmentation pipeline (rotation, brightness jitter, mosaic) instead of writing custom albumentations — the built-in auto-orient and EXIF handling saved a weekend of edge-case bugs. The model runs on a local RTX 3060; ONNX export with FP16 halved inference time without meaningful accuracy loss.",
-    results:
-      "mAP@0.5 of 0.89 across all species. Per-sample processing dropped from ~20 minutes manual to ~12 seconds automated. The lab integrated the CSV output into their reporting pipeline within a week of handoff.",
-  },
-  {
-    slug: "clustr",
-    name: "CLUSTR",
-    description:
-      "Lightweight CLI tool for clustering log patterns and detecting anomalies in unstructured text logs.",
-    tags: ["Rust", "CLI", "NLP", "Anomaly Detection"],
+      "Streamlit-powered data visualization and cleaning dashboard with automated quality scoring and Gemini LLM-powered business insights.",
+    images: [
+      "/images/projects/vizzy/analysis-dashboard.png",
+      "/images/projects/vizzy/main-interface.png",
+      "/images/projects/vizzy/data-quality.png",
+      "/images/projects/vizzy/distribution-analysis.png",
+      "/images/projects/vizzy/ai-insights.png",
+      "/images/projects/vizzy/preprocessing.png",
+    ],
+    tags: ["Python", "Streamlit", "Pandas", "Plotly", "Seaborn", "Gemini API"],
     type: "OSS",
-    github: "https://github.com/ArceusOmkar7/clustr",
+    github: "https://github.com/ArceusOmkar7/Vizzy",
     problem:
-      "Parsing millions of unstructured log lines to find anomalous patterns usually means either writing one-off grep pipelines or buying a SaaS observability tool. For small teams and side projects, both options suck. Wanted something that runs from a terminal and gives you clusters of similar log lines with outliers flagged.",
+      "Data scientists and analysts spend a significant amount of time performing repetitive exploratory data analysis (EDA), checking null counts, writing boilerplate plotting code, and cleaning dirty datasets. Existing profiling tools are either static and slow, or lock qualitative business summaries behind proprietary, paid web applications.",
     what:
-      "Built CLUSTR in Rust — reads log files (stdin or file), tokenizes lines using a lightweight TF-IDF vectoriser implemented from scratch, applies HDBSCAN for clustering, and prints clustered output with anomaly scores. The output is colour-coded in the terminal: clusters in green, anomalies in red. Supports JSON and CSV export for piping into other tools.",
+      "An interactive EDA and preprocessing dashboard that provides a structured, visually rich overview of any tabular dataset (CSV or Excel). It computes a 5-dimension Data Quality Score (Completeness, Consistency, Accuracy, Uniqueness, Validity) using an internal metrics engine. Vizzy displays auto-generated, copy-pasteable Python code snippets for 8 preprocessing scenarios (such as handling missing values, scaling, encoding, and memory optimization) and connects to Google's Gemini API to produce context-aware regional/business insights and summaries.",
     techDecisions:
-      "Rust over Python — log files can hit GB scale and Python's GIL + memory overhead becomes painful. Rust's `ahash` for hashing and `rayon` for parallel tokenization make the common case (500K lines) finish in ~2s. Used HDBSCAN over k-means because you don't know the number of log patterns ahead of time; HDBSCAN also naturally marks noise points as anomalies. Skipped fancy transformer embeddings — TF-IDF on character n-grams catches ~90% of structural patterns (stack traces, timestamps, SQL queries) at 1/1000th the compute cost.",
+      "Utilized Streamlit for UI rapid prototyping but implemented state-management helper functions in session state to maintain interactive navigation without encountering full-page tab resets. Paired Plotly with Matplotlib and Seaborn, employing interactive Plotly components for metric gauges and distribution charts while rendering complex subplots (such as multivariate correlation networks and missing data patterns) using static Seaborn heatmaps to optimize render times.",
     results:
-      "~350 GitHub stars, a few PRs from actual users in the observability space. Handles 1M log lines in ~8s on a 4-core machine. Used internally to surface a recurring TLS handshake failure pattern that had been buried in a 2GB nginx log dump.",
+      "Allows instant multi-tab analytics on CSV and Excel uploads. The application outputs data health summaries graded on an A-F scale, visualizes null-correlation patterns, highlights detected outlier limits, generates customized cleaning scripts, and prepares downloadable issue reports alongside synthesized Gemini summaries.",
   },
   {
-    slug: "reportr",
-    name: "Reportr",
+    slug: "atlas",
+    name: "Atlas",
     description:
-      "Automated PDF report generator with drag-and-drop dashboard widgets and scheduled delivery.",
-    tags: ["TypeScript", "Next.js", "Puppeteer", "PostgreSQL", "Resend"],
+      "Geographical memory journal mobile app that lets users map, tag, and preserve personal life events with automated weather logging.",
+    images: [
+      "/images/projects/atlas/homepage.jpg",
+      "/images/projects/atlas/memories_list_page.jpg",
+      "/images/projects/atlas/search_page.jpg",
+      "/images/projects/atlas/sidemenu_page.jpg",
+    ],
+    tags: ["React Native", "Expo", "TypeScript", "Supabase", "Tailwind CSS", "PostgreSQL"],
     type: "Full Stack",
-    github: "https://github.com/ArceusOmkar7/reportr",
-    url: "https://reportr-demo.vercel.app",
+    github: "https://github.com/ArceusOmkar7/Atlas",
     problem:
-      "Most internal reporting tools either require a data team (Metabase, Superset) or are rigid PDF generators that need code changes every time a report format changes. Non-technical team members wanted to build their own weekly reports without filing a ticket.",
+      "Traditional journal entries and photos are typically categorized by date alone, yet personal milestones are fundamentally tied to physical spaces. Existing journal solutions lack geographical integration, whereas map applications omit private storytelling features such as image galleries, customized tags, and local environmental context.",
     what:
-      "A full-stack app where users drag-and-drop chart widgets onto a canvas, connect them to SQL queries or CSV uploads, set a schedule (daily / weekly / monthly), and get a beautifully formatted PDF delivered to their inbox. The PDF is rendered via Puppeteer with a custom Tailwind template. Auth is magic-link based. Built-in template gallery for common report types (sales funnel, retention, usage spikes).",
+      "A cross-platform React Native mobile application built on Expo and TypeScript that allows users to geographically record, search, and navigate their memories. Powered by Supabase for authentication, relational PostgreSQL tables, and bucket-based image storage. Each logged memory contains custom tags (capped at 5), coordinates, a description, and historic local weather metrics (temperature, condition, and humidity) retrieved via the OpenWeather API at the time of creation.",
     techDecisions:
-      "Puppeteer over jsPDF or react-pdf — we needed pixel-perfect rendering of charts (Chart.js widgets) and tables spanning multiple pages with repeating headers. Puppeteer screenshots of a hidden iframe gave us exactly that, at the cost of a heavier worker container. Scheduled delivery uses `node-cron` in a lightweight worker process separated from the API to avoid blocking requests. Went with Resend for email delivery instead of SES — the DX is better and for <10K emails/month the cost is negligible. PostgreSQL with `jsonb` stores the widget configurations; no need for a separate document store when the query results are ephemeral.",
+      "Adopted Supabase to handle relational queries and client authentication, and configured row-level security (RLS) policies for user isolation. Applied NativeWind (Tailwind CSS) to share a styling scheme across screens. Optimized media bandwidth by configuring on-the-fly image transformations via Supabase Storage, requesting compressed thumbnails for list cards and fetching raw high-resolution files only on-demand within full-screen modal overlays. Integrated Expo Location to query GPS data, fallback-geocoding coordinates through the Google Places API.",
     results:
-      "Used by 3 internal teams at a local startup for ~6 months. Generated ~400 reports, ~85% scheduled, rest ad-hoc. Average report takes 45s from schedule trigger to inbox. The drag-and-drop canvas reduced report creation time from ~4 hours (coding a script) to ~15 minutes.",
+      "Features a fully complete mobile flow containing JWT-based user authentication, drawer-navigation menus, real-time Google Maps marker positioning categorized by tag colors, and a memory calendar displaying historical timelines. The application supports direct camera capture, gallery selection, tag creations, and multi-filter search capabilities.",
   },
 ]
 

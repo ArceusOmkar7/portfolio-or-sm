@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/projects"
+import { ProjectCarousel } from "@/app/components/ProjectCarousel"
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }))
@@ -67,6 +68,9 @@ export default async function ProjectPage({
           <p className="mt-3 text-base leading-relaxed text-muted-foreground">
             {project.description}
           </p>
+          <div className="mt-6">
+            <ProjectCarousel images={project.images} name={project.name} />
+          </div>
           <div className="mt-4 flex flex-wrap gap-1.5">
             {project.tags.map((tag) => (
               <span
