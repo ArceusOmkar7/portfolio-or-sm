@@ -3,6 +3,8 @@ import { Geist_Mono, Outfit, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/app/components/ThemeToggle"
+import { TransitionTypeSetter } from "@/app/components/TransitionTypeSetter"
+import { ViewTransitions } from "next-view-transitions"
 import { cn } from "@/lib/utils";
 
 const spaceGrotesk = Space_Grotesk({subsets:['latin'],variable:'--font-heading',weight:['400','500','600','700']});
@@ -20,17 +22,20 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", outfit.variable, spaceGrotesk.variable)}
-    >
-      <body>
-        <ThemeProvider>
-          <ThemeToggle />
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={cn("antialiased", fontMono.variable, "font-sans", outfit.variable, spaceGrotesk.variable)}
+      >
+        <body>
+          <TransitionTypeSetter />
+          <ThemeProvider>
+            <ThemeToggle />
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ViewTransitions>
   )
 }

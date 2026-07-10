@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "next-view-transitions"
 import { notFound } from "next/navigation"
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/projects"
 import { ProjectCarousel } from "@/app/components/ProjectCarousel"
@@ -30,12 +30,13 @@ export default async function ProjectPage({
 
   return (
     <main className="min-h-screen bg-background p-6 sm:p-12">
-      <article className="mx-auto max-w-3xl">
+      <article className="mx-auto max-w-4xl">
         <Link
           href="/projects"
+          data-transition="back"
           className="mb-8 inline-block text-sm font-bold text-foreground transition-colors hover:text-primary"
         >
-          ← back to projects
+          ← Projects
         </Link>
 
         <header className="mb-10">

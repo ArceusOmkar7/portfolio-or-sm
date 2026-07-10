@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Link from "next/link"
+import { Link } from "next-view-transitions"
 import { BentoGridContainer } from "./components/BentoGridContainer"
 import { BentoCard } from "./components/BentoCard"
 import { OpenSourceCard } from "./components/OpenSourceCard"
@@ -116,6 +116,7 @@ export default function Page() {
             <div>
               <Link
                 href="/projects/gniem"
+                data-transition="forward"
                 className="group"
               >
                 <h3 className="font-heading text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
@@ -141,6 +142,7 @@ export default function Page() {
             </div>
             <Link
               href="/projects"
+              data-transition="forward"
               className="mt-4 self-start font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
               View all projects →
@@ -164,17 +166,19 @@ export default function Page() {
           >
             <Link
               href="/blog"
+              data-transition="forward"
               className="font-heading text-sm font-bold tracking-tight text-foreground hover:underline"
             >
               Blog
             </Link>
             <div className="flex flex-1 items-center justify-center">
               <p className="text-center font-heading text-[11px] font-semibold text-muted-foreground">
-                Coming soon
+                smth cooking...
               </p>
             </div>
             <Link
               href="/blog"
+              data-transition="forward"
               className="font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground"
             >
               View all →

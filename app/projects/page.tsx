@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link as TransitionLink } from "next-view-transitions"
 import { getAllProjects } from "@/lib/projects"
 
 const typeColors: Record<string, string> = {
@@ -14,13 +14,14 @@ export default function ProjectsPage() {
 
   return (
     <main className="min-h-screen bg-background p-6 sm:p-12">
-      <div className="mx-auto max-w-5xl">
-        <Link
+      <div className="mx-auto max-w-4xl">
+        <TransitionLink
           href="/"
+          data-transition="back"
           className="mb-8 inline-block text-sm font-bold text-foreground transition-colors hover:text-primary"
         >
-          ← back
-        </Link>
+          ← Home
+        </TransitionLink>
         <h1 className="mb-2 font-heading text-4xl font-bold tracking-tight">
           Projects
         </h1>
@@ -30,9 +31,10 @@ export default function ProjectsPage() {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {projects.map((project) => (
-            <Link
+            <TransitionLink
               key={project.slug}
               href={`/projects/${project.slug}`}
+              data-transition="forward"
               className="group flex flex-col justify-between rounded-2xl border-2 border-black bg-card p-6 shadow-brutal transition-all duration-200 hover:-translate-y-1 hover:shadow-brutal-hover"
             >
               <div>
@@ -66,7 +68,7 @@ export default function ProjectsPage() {
                   View project →
                 </span>
               </div>
-            </Link>
+            </TransitionLink>
           ))}
         </div>
       </div>

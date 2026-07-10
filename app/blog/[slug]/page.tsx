@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "next-view-transitions"
 import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { getPostBySlug, getAllSlugs } from "@/lib/blog"
@@ -24,12 +24,13 @@ export default async function BlogPostPage({
 
   return (
     <main className="min-h-screen bg-background p-6 sm:p-12">
-      <article className="mx-auto max-w-3xl">
+      <article className="mx-auto max-w-4xl">
         <Link
           href="/blog"
-          className="inline-block mb-8 text-sm font-bold text-foreground hover:text-primary transition-colors"
+          data-transition="back"
+          className="mb-8 inline-block text-sm font-bold text-foreground transition-colors hover:text-primary"
         >
-          ← all posts
+          ← Blog
         </Link>
         <header className="mb-10">
           <time className="text-xs font-mono text-muted-foreground">{post.date}</time>
