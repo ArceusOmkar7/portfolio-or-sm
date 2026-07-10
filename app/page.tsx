@@ -3,38 +3,7 @@ import Link from "next/link"
 import { BentoGridContainer } from "./components/BentoGridContainer"
 import { BentoCard } from "./components/BentoCard"
 import { OpenSourceCard } from "./components/OpenSourceCard"
-import { getAllPosts } from "@/lib/blog"
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr)
-  const day = d.getDate()
-  const mod100 = day % 100
-  const mod10 = day % 10
-  let suffix = "th"
-  if (mod100 !== 11 && mod100 !== 12 && mod100 !== 13) {
-    if (mod10 === 1) suffix = "st"
-    else if (mod10 === 2) suffix = "nd"
-    else if (mod10 === 3) suffix = "rd"
-  }
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ]
-  return `${day}${suffix} ${months[d.getMonth()]} ${d.getFullYear()}`
-}
-
 export default function Page() {
-  const posts = getAllPosts()
   return (
     <main className="relative z-10 flex min-h-screen items-center justify-center p-4 sm:p-8 md:p-12">
       {/*
@@ -115,6 +84,7 @@ export default function Page() {
               className="rounded-2xl object-cover"
               style={{ objectPosition: "-70px center" }}
               unoptimized
+              loading="eager"
             />
           </BentoCard>
 
@@ -172,9 +142,7 @@ export default function Page() {
               </Link>
             </div>
             <Link
-              href="https://github.com/ArceusOmkar7"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/projects"
               className="mt-4 self-start font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
               View all projects →
@@ -194,41 +162,22 @@ export default function Page() {
 
           <BentoCard
             interactive
-            surface="accent"
             className="flex flex-col gap-2 p-3 sm:col-span-1 sm:col-start-7 sm:row-start-2"
           >
             <Link
               href="/blog"
-              className="font-heading text-sm font-bold tracking-tight text-primary-foreground/90 hover:underline"
+              className="font-heading text-sm font-bold tracking-tight text-foreground hover:underline"
             >
               Blog
             </Link>
-            <div className="flex flex-col gap-1.5">
-              {posts.slice(0, 3).map((post, i) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className="group block rounded-lg border border-primary-foreground/20 bg-primary-foreground/5 px-2.5 py-1.5 transition-colors hover:bg-primary-foreground/10"
-                >
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="truncate text-[11px] leading-tight font-semibold text-primary-foreground">
-                      {post.title}
-                    </span>
-                    {i === 0 && (
-                      <span className="shrink-0 text-[9px] font-bold tracking-wider text-primary-foreground/50 uppercase">
-                        Latest
-                      </span>
-                    )}
-                  </div>
-                  <time className="mt-0.5 block text-[10px] text-primary-foreground/40">
-                    {formatDate(post.date)}
-                  </time>
-                </Link>
-              ))}
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-center font-heading text-[11px] font-semibold text-muted-foreground">
+                Coming soon
+              </p>
             </div>
             <Link
               href="/blog"
-              className="font-mono text-[10px] text-primary-foreground/40 transition-colors hover:text-primary-foreground/70"
+              className="font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground"
             >
               View all →
             </Link>
