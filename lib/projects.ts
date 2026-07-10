@@ -4,7 +4,7 @@ export interface Project {
   description: string
   images: string[]
   tags: string[]
-  type: "ML" | "Backend" | "OSS" | "Full Stack"
+  type: "ML" | "Backend" | "OSS" | "Full Stack" | "Big Data"
   url?: string
   github: string
   problem: string
@@ -18,7 +18,7 @@ const projects: Project[] = [
     slug: "gniem",
     name: "GNIEM",
     description:
-      "Global News Intelligence & Event Monitoring — a geopolitical dashboard built on GDELT, without the multi-terabyte cloud bill.",
+      "Global News Intelligence & Event Monitoring - a geopolitical dashboard built on GDELT, one place for every event.",
     images: [
       "/images/projects/gniem/dashboard-1.png",
       "/images/projects/gniem/dashboard-2.png",
@@ -28,12 +28,12 @@ const projects: Project[] = [
       "/images/projects/gniem/sidebar-2.png",
     ],
     tags: ["Python", "TypeScript", "DuckDB", "BigQuery", "FastAPI", "React"],
-    type: "Backend",
+    type: "Big Data",
     github: "https://github.com/ArceusOmkar7/gniem",
     problem:
-      "GDELT 2.1 is a global events database that updates every 15 minutes and runs into multi-terabyte scale. Querying it for near-real-time geopolitical monitoring the naive way — hitting BigQuery on every request — gets expensive fast, and full-history warehousing isn't something a student project can just spin up.",
+      "News and events are scattered all over various sources, credibility and factualness of news is hard to believe. One source might say one thing and other something else about the same event, biases of the news provider might hinder with your research.",
     what:
-      "A hybrid OLAP dashboard that splits GDELT data into two tiers: a hot tier (last 90 days) ingested via daily BigQuery batch pulls plus 15-minute streaming fetches, stored as Parquet and queried in-process with DuckDB for low latency; and a cold tier (historical, >90 days) that stays in BigQuery behind a routing engine. On top of that sits an ML layer — Prophet for 30-day forecasts of conflict-event volume, IsolationForest for anomaly/'black swan' detection, TF-IDF + K-Means to cluster raw CAMEO event codes into readable themes, and a nightly Llama 3 (via Groq) pass that generates written regional briefings. The frontend is a React 19 + TypeScript + Vite bento-grid dashboard with Mapbox GL JS heatmaps, Wikipedia entity enrichment, and on-demand article scraping via Jina AI Reader.",
+      "Here comes GNIEM, we gather events all across the world with the help of GDELT dataset and present to you. A hybrid OLAP dashboard that splits GDELT data into two tiers: a hot tier (last 90 days) ingested via daily BigQuery batch pulls plus 15-minute streaming fetches, stored as Parquet and queried in-process with DuckDB for low latency; and a cold tier (historical, >90 days) that stays in BigQuery behind a routing engine. On top of that sits an ML layer — Prophet for 30-day forecasts of conflict-event volume, IsolationForest for anomaly/'black swan' detection, TF-IDF + K-Means to cluster raw CAMEO event codes into readable themes, and a nightly Llama 3 (via Groq) pass that generates written regional briefings. The frontend is a React 19 + TypeScript + Vite bento-grid dashboard with Mapbox GL JS heatmaps, Wikipedia entity enrichment, and on-demand article scraping via Jina AI Reader.",
     techDecisions:
       "DuckDB in-process over a hosted OLAP DB for the hot tier — Parquet + DuckDB gives fast analytical scans without running a database server. BigQuery is only touched for cold-tier historical queries, and even then every call goes through column pruning, SQLDATE partition filters, and a dry-run byte-estimate check before executing, capped at ~2GB scanned per query — necessary guardrails to keep this runnable on a personal GCP budget. TF-IDF + K-Means over heavier embedding-based clustering for the theme grouping, since it runs on a nightly schedule and needs to stay cheap, not real-time. Supercronic instead of full cron/Kubernetes for scheduling, since the whole stack ships as Docker Compose.",
     results:
@@ -76,7 +76,7 @@ const projects: Project[] = [
       "/images/projects/vizzy/preprocessing.png",
     ],
     tags: ["Python", "Streamlit", "Pandas", "Plotly", "Seaborn", "Gemini API"],
-    type: "OSS",
+    type: "ML",
     github: "https://github.com/ArceusOmkar7/Vizzy",
     problem:
       "Data scientists and analysts spend a significant amount of time performing repetitive exploratory data analysis (EDA), checking null counts, writing boilerplate plotting code, and cleaning dirty datasets. Existing profiling tools are either static and slow, or lock qualitative business summaries behind proprietary, paid web applications.",
